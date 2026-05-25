@@ -1,0 +1,45 @@
+//
+//  HomeView.swift
+//  SecureAuthSampleApp
+//
+//  Created by Ruchit on 25/05/26.
+//
+import SwiftUI
+
+struct HomeView: View {
+
+    @AppStorage("isUnlocked") private var isUnlocked = false
+    @AppStorage("isPinCreated") private var isPinCreated = false
+
+    var body: some View {
+
+        VStack(spacing: 20) {
+
+            Image(systemName: "lock.open.fill")
+                .resizable()
+                .frame(width: 100, height: 100)
+
+            Text("Welcome Home")
+
+            Button("Logout") {
+                print("Logout clicked")
+                isUnlocked = false
+            }
+            .padding()
+            .background(Color.red)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+
+            Button("Reset PIN") {
+
+                isPinCreated = false
+                isUnlocked = false
+            }
+            .padding()
+            .background(Color.orange)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+        }
+    }
+}
+
