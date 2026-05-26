@@ -5,12 +5,81 @@
 //  Created by Ruchit on 25/05/26.
 //
 
+//import Foundation
+//import LocalAuthentication
+//
+//#if DEBUG
+//let mockBiometricSuccess = false
+//#endif
+//
+//#if DEBUG
+//var isDebugBypassEnabled: Bool {
+//    UserDefaults.standard.bool(forKey: "DEBUG_BIOMETRIC_BYPASS")
+//}
+//#endif
+//final class BiometricService {
+//
+//    static let shared = BiometricService()
+//
+//    private init() {}
+//
+//    func authenticate() async -> Bool {
+//
+//        #if DEBUG
+//        if isDebugBypassEnabled {
+//            print("⚠️ Debug biometric bypass enabled")
+//            return true
+//        }
+//        #endif
+//
+//        let context = LAContext()
+//        var error: NSError?
+//
+//        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+//
+//            do {
+//                let success = try await context.evaluatePolicy(
+//                    .deviceOwnerAuthenticationWithBiometrics,
+//                    localizedReason: "Authenticate to continue"
+//                )
+//
+//                return success
+//
+//            } catch {
+//                print(error.localizedDescription)
+//                return false
+//            }
+//        }
+//
+//        return false
+//    }
+//    
+//    func biometricType() -> String {
+//
+//        let context = LAContext()
+//
+//        context.canEvaluatePolicy(
+//            .deviceOwnerAuthenticationWithBiometrics,
+//            error: nil
+//        )
+//
+//        switch context.biometryType {
+//
+//        case .faceID:
+//            return "Face ID"
+//
+//        case .touchID:
+//            return "Touch ID"
+//
+//        default:
+//            return "Biometric"
+//        }
+//    }
+//}
+
+
 import Foundation
 import LocalAuthentication
-
-#if DEBUG
-let mockBiometricSuccess = false
-#endif
 
 final class BiometricService {
 
@@ -18,51 +87,34 @@ final class BiometricService {
 
     private init() {}
 
-    func authenticate(completion: @escaping (Bool) -> Void) {
+    // MARK: - Check Biometric Available
 
-    #if DEBUG
-    if mockBiometricSuccess {
-        completion(true)
-        return
-    }
-    #endif
-        
+    func isBiometricAvailable() -> Bool {
+
         let context = LAContext()
         var error: NSError?
 
-        if context.canEvaluatePolicy(
+        let success = context.canEvaluatePolicy(
             .deviceOwnerAuthenticationWithBiometrics,
             error: &error
-        ) {
+        )
 
-            let reason = "Unlock using Face ID"
-
-            context.evaluatePolicy(
-                .deviceOwnerAuthenticationWithBiometrics,
-                localizedReason: reason
-            ) { success, _ in
-
-                DispatchQueue.main.async {
-                    completion(success)
-                }
-            }
-
-        } else {
-            completion(false)
-        }
+        return success
     }
-    
+
+    // MARK: - Biometric Type
+
     func biometricType() -> String {
 
         let context = LAContext()
+        var error: NSError?
 
         context.canEvaluatePolicy(
             .deviceOwnerAuthenticationWithBiometrics,
-            error: nil
+            error: &error
         )
 
         switch context.biometryType {
-
         case .faceID:
             return "Face ID"
 
@@ -70,7 +122,44 @@ final class BiometricService {
             return "Touch ID"
 
         default:
-            return "Biometric"
+            return "None"
         }
+    }
+
+    // MARK: - Authenticate
+
+    func authenticate() async -> Bool {
+
+        let context = LAContext()
+        var error: NSError?
+
+        guard context.canEvaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics,
+            error: &error
+        ) else {
+            return false
+        }
+
+        do {
+
+            let success = try await context.evaluatePolicy(
+                .deviceOwnerAuthenticationWithBiometrics,
+                localizedReason: "Authenticate to unlock app"
+            )
+
+            return success
+
+        } catch {
+
+            print(error.localizedDescription)
+            return false
+        }
+    }
+    
+    func isBiometricEnabled() -> Bool {
+
+        return UserDefaults.standard.bool(
+            forKey: "biometric_enabled"
+        )
     }
 }

@@ -14,7 +14,16 @@ struct LoginView: View {
     var body: some View {
 
         VStack(spacing: 20) {
+            
+            TextField("External Token", text: $vm.externalToken)
 
+                .textFieldStyle(.roundedBorder)
+
+            Button("Unlock Using External Method") {
+
+                vm.unlockUsingExternalMethod()
+
+            }
             Text("Login")
                 .font(.largeTitle)
 
@@ -40,9 +49,12 @@ struct LoginView: View {
 
             Button("Use \(BiometricService.shared.biometricType())") {
 
-                BiometricService.shared.authenticate { success in
+                Task {
+                    let success = await BiometricService.shared.authenticate()
 
-                    vm.isUnlocked = success
+                    await MainActor.run {
+                        vm.isUnlocked = success
+                    }
                 }
             }
             .padding()

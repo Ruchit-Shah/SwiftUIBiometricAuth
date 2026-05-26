@@ -31,4 +31,9 @@ final class AuthService {
             forKey: Constants.biometricEnabled
         )
     }
+    
+    func unlockWithExternalToken(_ token: String) -> Bool {
+        let validToken = "RUCHIT_SECURE_TOKEN"
+        return token == validToken
+    }
 }

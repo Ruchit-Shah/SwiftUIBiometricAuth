@@ -17,7 +17,9 @@ final class LoginViewModel: ObservableObject {
     @Published var errorMessage = ""
     @Published var attempts = 0
     @Published var isLocked = false
-
+    @Published var externalToken: String = ""
+    
+    
     init() {
         autoBiometricLogin()
     }
@@ -45,14 +47,22 @@ final class LoginViewModel: ObservableObject {
             }
         }
     }
+    func unlockUsingExternalMethod() {
 
+        let success = AuthService.shared.unlockWithExternalToken(externalToken)
+
+        if success {
+            isUnlocked = true
+            SessionManager.shared.saveLoginTime()
+        }
+    }
+    
     func autoBiometricLogin() {
-
         if AuthService.shared.isBiometricEnabled() {
+            Task {
+                let success = await BiometricService.shared.authenticate()
 
-            BiometricService.shared.authenticate { success in
-
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.isUnlocked = success
                 }
             }

@@ -12,7 +12,20 @@ struct HomeView: View {
     @AppStorage("isPinCreated") private var isPinCreated = false
 
     var body: some View {
-
+#if DEBUG
+Toggle(
+    "Enable Debug Biometric Bypass",
+    isOn: Binding(
+        get: {
+            UserDefaults.standard.bool(forKey: "DEBUG_BIOMETRIC_BYPASS")
+        },
+        set: {
+            UserDefaults.standard.set($0, forKey: "DEBUG_BIOMETRIC_BYPASS")
+        }
+    )
+)
+.padding()
+#endif
         VStack(spacing: 20) {
 
             Image(systemName: "lock.open.fill")
