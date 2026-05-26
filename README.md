@@ -264,6 +264,59 @@ Screens Included
 
 ⸻
 
+## Overview
+
+This project now includes an enhanced biometric authentication flow with support for external unlock mechanisms, making the architecture more scalable for enterprise, kiosk, and secure authentication scenarios.
+
+---
+
+## Features Added
+
+### Authentication Enhancements
+
+- Face ID / Touch ID authentication
+- Biometric availability detection
+- External token-based unlock flow
+- Dynamic biometric UI handling
+- Enable/disable biometric support
+
+### Architecture Improvements
+
+- MVVM-based authentication improvements
+- Reusable biometric service layer
+- Improved separation of concerns
+- Scalable authentication structure
+- Enterprise/kiosk-ready authentication flow support
+
+---
+
+## External Unlock Mechanism
+
+The application now supports external unlock validation using a secure token-based mechanism.
+
+This architecture can be extended for:
+
+- QR-based unlock
+- BLE unlock
+- RFID unlock
+- Backend session validation
+- MDM-controlled authentication
+
+---
+
+## Future Scope
+
+Potential future enhancements include:
+
+- QR-based unlock
+- BLE unlock
+- RFID unlock
+- Backend session validation
+- MDM-controlled authentication
+- Secure Enclave integration
+- Multi-factor authentication
+- Enterprise device trust validation
+
 Author
 
 Ruchit Shah
