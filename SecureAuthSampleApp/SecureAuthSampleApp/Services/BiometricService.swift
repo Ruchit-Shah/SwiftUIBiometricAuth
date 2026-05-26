@@ -156,9 +156,26 @@ final class BiometricService {
         }
     }
     
+    
+    func enableBiometric() {
+
+        UserDefaults.standard.set(
+            true,
+            forKey: "biometric_enabled"
+        )
+    }
+
+    func disableBiometric() {
+
+        UserDefaults.standard.set(
+            false,
+            forKey: "biometric_enabled"
+        )
+    }
+
     func isBiometricEnabled() -> Bool {
 
-        return UserDefaults.standard.bool(
+        UserDefaults.standard.bool(
             forKey: "biometric_enabled"
         )
     }

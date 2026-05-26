@@ -53,6 +53,34 @@ Toggle(
             .foregroundColor(.white)
             .cornerRadius(10)
         }
+        VStack(spacing: 20) {
+
+            Button("Enable Biometrics") {
+
+                BiometricService.shared.enableBiometric()
+            }
+
+            .padding()
+            .background(Color.green)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+
+            Button("Disable Biometrics") {
+
+                BiometricService.shared.disableBiometric()
+            }
+
+            .padding()
+            .background(Color.red)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+
+            Text(
+                BiometricService.shared.isBiometricEnabled()
+                ? "Biometric Enabled"
+                : "Biometric Disabled"
+            )
+        }
     }
 }
 
